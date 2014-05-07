@@ -10,6 +10,5 @@ RUN chmod 664 /etc/my.cnf
 ADD run /usr/local/bin/run
 RUN chmod +x /usr/local/bin/run
 
-VOLUME ["/var/lib/mysql"]
 EXPOSE 3306
 CMD ["/usr/local/bin/run"]
