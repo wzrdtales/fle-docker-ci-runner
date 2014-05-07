@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-MYSQL_RAM=${MYSQL_RAM:-"0"}
+MYSQL_RAM=${MYSQL_RAM:-"1"}
 MYSQL_RAM_SIZE=${MYSQL_RAM_SIZE:-"256"}
 
 if [[ "$MYSQL_RAM" != "0" ]]; then
@@ -29,6 +29,8 @@ USE mysql;
 FLUSH PRIVILEGES;
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
 UPDATE user SET password=PASSWORD("$MYSQL_ROOT_PASSWORD") WHERE user='root';
+GRANT USAGE ON *.* TO 'testrunner'@'%' IDENTIFIED BY 'testrunner';
+GRANT ALL PRIVILEGES ON \`%_test\`.* TO 'testrunner'@'%';
 EOF
 
 if [[ $MYSQL_DATABASE != "" ]]; then
