@@ -1,10 +1,12 @@
-FROM stackbrew/ubuntu:12.04
-MAINTAINER Ben Firshman <ben@orchardup.com>
+FROM centos
+MAINTAINER Mason Malone <masonm@the-jci.org>
 
-RUN apt-get update -qq && apt-get install -y mysql-server-5.5
+RUN yum -y upgrade
+RUN yum install -y http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
+RUN yum install -y mysql-community-server
 
-ADD my.cnf /etc/mysql/conf.d/my.cnf
-RUN chmod 664 /etc/mysql/conf.d/my.cnf
+ADD my.cnf /etc/my.cnf
+RUN chmod 664 /etc/my.cnf
 ADD run /usr/local/bin/run
 RUN chmod +x /usr/local/bin/run
 
