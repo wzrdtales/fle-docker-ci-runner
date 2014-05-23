@@ -17,7 +17,7 @@ MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-""}
 MYSQL_DATABASE=${MYSQL_DATABASE:-""}
 MYSQL_USER=${MYSQL_USER:-""}
 MYSQL_PASSWORD=${MYSQL_PASSWORD:-""}
-MYSQLD_ARGS=${MYSQLD_ARGS:-""}
+MYSQLD_ARGS=${MYSQLD_ARGS:-"--skip-name-resolve --skip-host-cache"}
 
 tfile=`mktemp`
 if [[ ! -f "$tfile" ]]; then
