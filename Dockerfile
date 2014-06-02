@@ -1,14 +1,9 @@
-FROM centos
-MAINTAINER Mason Malone <masonm@the-jci.org>
+FROM theasci/mysql
 
-RUN yum -y upgrade
-RUN yum install -y http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
-RUN yum install -y mysql-community-server
-
-ADD my.cnf /etc/my.cnf
-RUN chmod 664 /etc/my.cnf
-ADD run /usr/local/bin/run
-RUN chmod +x /usr/local/bin/run
+ADD tmpfs.cnf /etc/mysql/conf.d/tmpfs.cnf
+RUN chmod 664 /etc/mysql/conf.d/tmpfs.cnf
+ADD setup_and_run_tmpfs.sh /usr/local/bin/setup_and_run_tmpfs.sh
+RUN chmod +x /usr/local/bin/setup_and_run_tmpfs.sh
 
 EXPOSE 3306
-CMD ["/usr/local/bin/run"]
+CMD ["/usr/local/bin/setup_and_run_tmpfs.sh"]
