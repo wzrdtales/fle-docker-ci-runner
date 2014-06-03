@@ -1,4 +1,4 @@
-FROM theasci/mysql
+FROM theasci/docker-mysql
 
 ADD tmpfs.cnf /etc/mysql/conf.d/tmpfs.cnf
 RUN chmod 664 /etc/mysql/conf.d/tmpfs.cnf

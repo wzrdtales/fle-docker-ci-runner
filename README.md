@@ -1,29 +1,18 @@
-docker-mysql
+docker-mysql-tmpfs
 ============
 
-MySQL on Docker.
-
-Includes a bunch of cool features such as:
-
- - Exporting volumes so your data persists.
- - Not running as root.
- - Printing log output.
- - Setting a root password.
- - Creating a user and database.
- - Passing extra parameters to mysqld.
- - Running MySQL on RAM (datadir mounted on tmpfs)
+MySQL mounted on a ramdisk using tmpfs. Intended for test environments to speed up tests that access MySQL.
 
 Here's how it works:
 
-    $ docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=xehVg1IpVhEmlwRMG orchardup/mysql
-    da809981545f
-    $ mysql -h 127.0.0.1 -u root -p
-    Enter password:
+    $ docker run --privileged -d -p 3307:3306 -e MYSQL_SQL_TO_RUN='GRANT ALL ON *.* TO "testrunner"@"%";' theasci/docker-mysql-tmpfs
+    2caf9f1822037b9fb22bfcd23fabc24545d616fc8af69e97be693986650fce33
+    $ mysql --host=127.0.0.1 --port=3307 --user=testrunner 
     Welcome to the MySQL monitor.  Commands end with ; or \g.
     Your MySQL connection id is 1
-    Server version: 5.5.34-0ubuntu0.12.04.1-log (Ubuntu)
+    Server version: 5.6.19-log MySQL Community Server (GPL)
 
-    Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2000, 2014, Oracle and/or its affiliates. All rights reserved.
 
     Oracle is a registered trademark of Oracle Corporation and/or its
     affiliates. Other names may be trademarks of their respective
@@ -38,10 +27,6 @@ Here's how it works:
 Environment variables
 ---------------------
 
- - `MYSQL_ROOT_PASSWORD`: The password for the root user, set every time the server starts. Defaults to a blank password, which is handy for development, but you should set this to something in production.
- - `MYSQL_DATABASE`: A database to automatically create if it doesn't exist. If not provided, does not create a database.
- - `MYSQL_USER`: A user to create that has access to the database specified by `MYSQL_DATABASE`.
- - `MYSQL_PASSWORD`: The password for `MYSQL_USER`. Defaults to a blank password.
- - `MYSQLD_ARGS`: extra parameters to pass to the mysqld process
- - `MYSQLD_RAM`: Turn on tmpfs datadir mounting. Defaults to 0.
- - `MYSQLD_RAM_SIZE`: tmpfs datadir size in megabytes. Defaults to 256.
+ - `MYSQL_SQL_TO_RUN`: Chunk of SQL to run when starting. Defaults to ``"GRANT ALL ON \`%_test\`.* TO testrunner@'%' IDENTIFIED BY 'testrunner'";``
+ - `MYSQLD_ARGS`: Extra parameters to pass to the mysqld process. Defaults to `"--skip-name-resolve --skip-host-cache"`
+ - `MYSQLD_RAM_SIZE`: Amount of memory to allocate to tmpfs datadir. Defaults to `256`
