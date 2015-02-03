@@ -1,0 +1,14 @@
+[mysqld]
+# Buffer/Cache settings
+key_buffer_size = 16K
+sort_buffer_size = 64K
+read_buffer_size = 256K
+read_rnd_buffer_size = 256K
+net_buffer_length = 2K
+
+innodb_buffer_pool_size = 96M
+innodb_buffer_pool_instances = 1
+innodb_flush_log_at_trx_commit = 2
+innodb_doublewrite = 'OFF'
+innodb_file_format = Barracuda
+innodb_log_file_size = 2M
