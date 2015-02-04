@@ -21,17 +21,6 @@ stdout_logfile=/var/log/supervisor/%(program_name)s.log
 stderr_logfile=/var/log/supervisor/%(program_name)s_error.log
 EOF
 
-cat > /etc/supervisor/conf.d/mysqld.conf <<EOF
-[program:mysqld]
-priority=20
-directory=/tmp
-command=/usr/bin/mysqld_safe
-user=root
-autostart=true
-autorestart=true
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s.log
-EOF
 
 sed 's/daemonize yes/daemonize no/' -i /etc/redis/redis.conf
 cat > /etc/supervisor/conf.d/redis-server.conf <<EOF
@@ -49,31 +38,6 @@ EOF
 # start supervisor
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
-# wait for mysql server to start (max 30 seconds)
-timeout=30
-while ! /usr/bin/mysqladmin -u root status >/dev/null 2>&1
-do
-  timeout=$(($timeout - 1))
-  if [ $timeout -eq 0 ]; then
-    echo "Could not connect to mysql server. Aborting..."
-    exit 1
-  fi
-  echo "Waiting for database server to accept connections..."
-  sleep 1
-done
-
-# create user for the runner
-mysql -uroot -e "CREATE USER 'runner'@'localhost' IDENTIFIED BY 'password';"
-mysql -uroot -e "GRANT ALL PRIVILEGES ON * . * TO 'runner'@'localhost';"
-mysql -uroot -e "FLUSH PRIVILEGES;"
-
-# install phantomjs at /app prefix
-mkdir -p /app/phantomjs
-PHANTOMJS_VERSION=1.8.1
-if [ -f /app/setup/phantomjs-${PHANTOMJS_VERSION}-linux-x86_64.tar.bz2 ]; then
-  tar -jvxf /app/setup/phantomjs-${PHANTOMJS_VERSION}-linux-x86_64.tar.bz2 --strip=1 -C /app/phantomjs/
-else
-  wget "http://phantomjs.googlecode.com/files/phantomjs-${PHANTOMJS_VERSION}-linux-x86_64.tar.bz2" -O - | tar -jvxf - --strip=1 -C /app/phantomjs/
-fi
-ln -s /app/phantomjs/bin/phantomjs /usr/bin/phantomjs
-phantomjs --version
+echo '' >> /etc/environment
+echo 'ENV=CI' >> /etc/environment
+echo '' >> /etc/environment
