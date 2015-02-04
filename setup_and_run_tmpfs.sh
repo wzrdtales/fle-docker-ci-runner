@@ -31,7 +31,7 @@ EOF
 rm -f $tfile
 
 ln -s /etc/php5/mods-available/mcrypt.ini /etc/php5/cli/conf.d/20-mcrypt.ini
-/etc/init.d/memcached
+/etc/init.d/memcached start
 
 exec /usr/sbin/mysqld $MYSQLD_ARGS &
 
