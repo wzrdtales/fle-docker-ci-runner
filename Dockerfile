@@ -21,7 +21,7 @@ RUN export http_proxy=http://10.1.0.16:8080 && \
       libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
       mariadb-server redis-server memcached php5 php5-memcached php5-mysqlnd php5-curl php5-xcache \
       php5-xdebug php5-sybase php5-mcrypt nodejs fontconfig chromium-browser \
-      xvfb firefox google-chrome-stable php5-cli ant libmemcached-dev hhvm && \
+      xvfb firefox google-chrome-stable php5-cli ant libmemcached-dev hhvm curl && \
     gem install --no-document bundler && \
     rm -rf /var/lib/apt/lists/* # 20140918 && \
     ln -s /usr/bin/nodejs /usr/bin/node && \
@@ -35,6 +35,16 @@ ADD tmpfs.cnf /etc/mysql/conf.d/tmpfs.cnf
 RUN chmod 664 /etc/mysql/conf.d/tmpfs.cnf
 ADD setup_and_run_tmpfs.sh /usr/local/bin/setup_and_run_tmpfs.sh
 RUN chmod +x /usr/local/bin/setup_and_run_tmpfs.sh
+
+
+RUN export http_proxy=http://10.1.0.16:8080 && \
+    export https_proxy=http://10.1.0.16:8080 && \
+    export ftp_proxy=http://10.1.0.16:8080 && \
+    ln -s /usr/bin/nodejs /usr/bin/node && \
+    curl -L https://npmjs.com/install.sh | sh && \
+    npm install -g bower && \
+    npm install -g grunt && \
+    npm install -g grunt-cli
 
 CMD ["/usr/local/bin/setup_and_run_tmpfs.sh"]
 RUN /app/setup/install
